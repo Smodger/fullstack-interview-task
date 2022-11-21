@@ -11,7 +11,7 @@ const app = express()
 app.use(bodyParser.json({limit: "10mb"}))
 
 const csvWriter = createCsvWriter({
-    path: '.csv',
+    path: 'admin.csv',
     header: [
         {id: 'user', title: 'User'},
         {id: 'firstName', title: 'First Name'},
@@ -49,8 +49,13 @@ const compileReportData = (data) => {
         } 
     }
 
-    console.log(csvData);
+    writeReport(csvData)
 } 
+
+const writeReport = (csvData) => {
+    csvWriter.writeRecords(csvData)
+        .then(() => console.log('The CSV file was written successfully'));
+}
 
 // const getCompanyNames = (holdings) => {
 //     holdings.map((holding) => {
