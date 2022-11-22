@@ -1,10 +1,6 @@
-# Moneyhub Tech Test - Investments and Holdings
+# Chris Norman's Moneyhub Tech Test - Investments and Holdings
 
-At Moneyhub we use microservices to partition and separate the concerns of the codebase. In this exercise we have given you an example `admin` service and some accompanying services to work with. In this case the admin service backs a front end admin tool allowing non-technical staff to interact with data.
-
-A request for a new admin feature has been received
-
-## Requirements
+## Requirements Reminder
 
 - An admin is able to generate a csv formatted report showing the values of all user holdings
     - The report should be sent to the `/export` route of the investments service
@@ -21,15 +17,6 @@ We prefer:
 - Ramda.js (this is not a requirement but feel free to investigate)
 - Unit testing
 
-### Notes
-All of you work should take place inside the `admin` microservice
-
-For the purposes of this task we would assume there are sufficient security middleware, permissions access and PII safe protocols, you do not need to add additional security measures as part of this exercise.
-
-You are free to use any packages that would help with this task
-
-We're interested in how you break down the work and build your solution in a clean, reusable and testable manner rather than seeing a perfect example, try to only spend around *1-2 hours* working on it
-
 ## Deliverables
 **Please make sure to update the readme with**:
 
@@ -39,13 +26,18 @@ We're interested in how you break down the work and build your solution in a cle
     1. How might you make this service more secure?
     2. How would you make this solution scale to millions of records?
     3. What else would you have liked to improve given more time?
-  
+
+
 
 On completion email a link to your repository to your contact at Moneyhub and ensure it is publicly accessible.
 
+## New Routes
+Admin - localhost:8083
+- `/investments` get all investments and it will send an csv to the /investments/exports endpoint
+
 ## Getting Started
 
-Please clone this service and push it to your own github (or other) public repository
+I have forked the repo. 
 
 To develop against all the services each one will need to be started in each service run
 
@@ -54,24 +46,18 @@ npm start
 or
 npm run develop
 ```
+## Creating a csv
 
-The develop command will run nodemon allowing you to make changes without restarting
+Using postman (or equivalent) send a get request to `http://localhost:8083/investments/`
 
-The services will try to use ports 8081, 8082 and 8083
+This will create a csv file called admin.csv inside the admin directory
 
-Use Postman or any API tool of you choice to trigger your endpoints (this is how we will test your new route).
+It will also send the JSON data that created admin.csv to the endpoing `investments/export`
 
-### Existing routes
-We have provided a series of routes 
+## What more would I do if I had the time. 
 
-Investments - localhost:8081
-- `/investments` get all investments
-- `/investments/:id` get an investment record by id
-- `/investments/export` expects a csv formatted text input as the body
+I am using a hash to look up the company name based on the company id. If there were many companies, with more complicated ids this would not be the best way. Therefore if I had more time I would have looked up the company name by calling `localhost:8082/companies/${holding.id}`. I had mocked up a function to do this, but didn't have time to implement it. The function is called getCompanyNames and is commented out in my code. 
 
-Financial Companies - localhost:8082
-- `/companies` get all companies details
-- `/companies/:id` get company by id
+I would also have separated the routes from the logic into different js files. This makes the code easier to follow and avoids confusion. 
 
-Admin - localhost:8083
-- `/investments/:id` get an investment record by id
+For added security I would added authorisation to ensure that the request from admin was from an authorised user.

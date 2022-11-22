@@ -31,8 +31,6 @@ const companyHash = {
 let csvData = [];
 
 const compileReportData = (data) => {
-
-
     for (let i = 0; i < data.length; i++) {
         const person = data[i];
 
