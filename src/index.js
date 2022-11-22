@@ -3,6 +3,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const config = require("config")
 const request = require("request")
+const axios = require("axios")
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
 
@@ -28,16 +29,17 @@ const companyHash = {
     2 : "The Small Investment Company",
     3 : "Capital Investments"
 }
+let csvData = [];
 
 const compileReportData = (data) => {
 
-    let csvData = [];
 
     for (let i = 0; i < data.length; i++) {
         const person = data[i];
 
         for (let j = 0; j < person.holdings.length; j++) {
             const holding = person.holdings[j]
+
             csvData.push({
                 user : person.userId,
                 firstName : person.firstName,
@@ -55,6 +57,16 @@ const compileReportData = (data) => {
 const writeReport = (csvData) => {
     csvWriter.writeRecords(csvData)
         .then(() => console.log('The CSV file was written successfully'));
+
+    sendReport(csvData)
+}
+
+const sendReport = (csvData) => {
+    axios.post(`
+        ${config.investmentsServiceUrl}/investments/export`, 
+        csvData, 
+        { headers : { 'Content-Type' : 'application/json' } 
+    })
 }
 
 // const getCompanyNames = (holdings) => {
