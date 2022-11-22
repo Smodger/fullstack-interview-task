@@ -2,7 +2,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const config = require("config")
-const request = require("request")
 const axios = require("axios")
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter
@@ -83,27 +82,25 @@ const sendReport = (csvData) => {
 // }
 
 app.get("/investments/:id", async (req, res) => {
-    const {id} = req.params
-    request.get(`${config.investmentsServiceUrl}/investments/${id}`, (e, r, investments) => {
-        if (e) {
-            console.error(e)
-            res.send(500)
-        } else {
-            res.send(investments)
-        }
-    })
+    try {
+        const {id} = req.params
+        const response = await axios.get(`${config.investmentsServiceUrl}/investments/${id}`)
+        res.send(response.data)
+    }catch(e) {
+        console.error(e)
+        res.sendStatus(500)
+    }
 })
 
 app.get("/investments/", async (req, res) => {
-    request.get(`${config.investmentsServiceUrl}/investments/`, (e, r, investments) => {
-        if (e) {
-            console.error(e)
-            res.send(500)
-        } else {
-            res.send(investments)
-            compileReportData(JSON.parse(investments))
-        }
-    })
+    try {
+        const response = await axios.get(`${config.investmentsServiceUrl}/investments/`)
+        res.send(response.data)
+        compileReportData(response.data)
+    }catch(e) {
+        console.error(e)
+        res.send(500)
+    }
 })
 
 app.listen(config.port, (err) => {
